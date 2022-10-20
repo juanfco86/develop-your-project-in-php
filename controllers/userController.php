@@ -56,6 +56,29 @@
             header("Location: ?controller=User&action=showAll");
         }
 
+        public function login() {
+            require_once "models/user.php";
+            
+            $user = new User();
+            
+            if (isset($_POST['login'])) {
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+                
+                $ready = $user->login($username, $password);
+                $_SESSION['login'] = "OK";
+                
+                //var_dump($_SESSION['login']);  
+                
+                if($ready) {
+                    require_once "views/main/main.php";
+                } else {
+                    require_once "views/user/login.php";
+                    echo "Wrong username or password.";
+                }
+            }
+
+        }
 
     }
 

@@ -14,6 +14,7 @@
             // VIEW
             require_once "views/vehicle/list.php";
         }
+        
         public function create() {
             require_once "views/vehicle/create.php";
         }

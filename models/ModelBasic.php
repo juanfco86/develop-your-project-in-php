@@ -16,6 +16,7 @@
             $query = $this->connect->query($sql);
             $request = $query->fetchAll(PDO::FETCH_ASSOC);
             return $request;
+        
         }
 
     }

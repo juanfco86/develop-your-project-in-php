@@ -9,52 +9,47 @@ use FTP\Connection;
         public $email;
         public $username;
         public $password;        
-        // public $connect;
-        
 
-        // public function __construct() {
-        //     parent::__construct();
-        // }
 
-        // function getId() {
-        //     return $this->id;
-        // }
+        function getId() {
+            return $this->id;
+        }
 
-        // function getName() {
-        //     return $this->name;
-        // }
+        function getName() {
+            return $this->name;
+        }
 
-        // function getEmail() {
-        //     return $this->email;
-        // }
+        function getEmail() {
+            return $this->email;
+        }
 
-        // function getUsername() {
-        //     return $this->username;
-        // }
+        function getUsername() {
+            return $this->username;
+        }
 
-        // function getPass() {
-        //     return $this->pass;
-        // }
+        function getPassword() {
+            return $this->password;
+        }
 
-        // function setId($id) {
-        //     $this->id = $id;
-        // }
+        function setId($id) {
+            $this->id = $id;
+        }
 
-        // function setName($name) {
-        //     $this->name = $name;
-        // }
+        function setName($name) {
+            $this->name = $name;
+        }
 
-        // function setEmail($email) {
-        //     $this->email = $email;
-        // }
+        function setEmail($email) {
+            $this->email = $email;
+        }
 
-        // function setUsername($username) {
-        //     $this->username = $username;
-        // }
+        function setUsername($username) {
+            $this->username = $username;
+        }
 
-        // function setPass($pass) {
-        //     $this->pass = $pass;
-        // }
+        function setPassword($password) {
+            $this->password = $password;
+        }
 
         public function create(string $name, string $email, string $username, string $password) {
             $this->name = $name;
@@ -62,9 +57,13 @@ use FTP\Connection;
             $this->username = $username;
             $this->password = $password;
 
+            $option = array('cost' => 10);
+
+            $passwordHashed = password_hash($password, PASSWORD_BCRYPT, $option);
+
             $sql = "INSERT INTO users(name, email, username, password) VALUES (?,?,?,?)";
             $insert = $this->connect->prepare($sql);
-            $arrData = array($this->name, $this->email, $this->username, $this->password);
+            $arrData = array($this->name, $this->email, $this->username, $passwordHashed);
             $insertExe = $insert->execute($arrData);
 
         }
@@ -85,6 +84,29 @@ use FTP\Connection;
             $sql = "DELETE FROM users WHERE id=$id";
             $delete = $this->connect->query($sql);
             
+        }
+
+        public function login($username, $password) {
+            $sql = "SELECT * FROM users WHERE username=:user";
+            $login = $this->connect->prepare($sql);
+            $login->bindParam(":user", $username);
+            $login->execute();
+
+            
+            if ($login->rowCount() == 1) {
+                $row = $login->fetch(PDO::FETCH_ASSOC);
+                $passwordHashed = $row['password'];
+                
+                
+                if(password_verify($password, $passwordHashed)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
         }
 
     }
