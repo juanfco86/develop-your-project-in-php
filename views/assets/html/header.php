@@ -15,7 +15,7 @@
             <a class="nav-link" href="?controller=vehicle&action=list">Vehicles</a>
         </li>
         <li class="nav-item row-12">
-            <a class="nav-link" href="?controller=User&action=login">Login</a>
+            <a class="nav-link" href="?controller=User&action=logout">Logout</a>
         </li>
         </ul>
     </div>

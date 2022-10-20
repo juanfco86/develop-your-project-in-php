@@ -60,18 +60,15 @@
             require_once "models/user.php";
             
             $user = new User();
-            
-            if (isset($_POST['login'])) {
+
+            if (isset($_POST['username'])) {
                 $username = $_POST['username'];
                 $password = $_POST['password'];
                 
                 $ready = $user->login($username, $password);
-                $_SESSION['login'] = "OK";
-                
-                //var_dump($_SESSION['login']);  
                 
                 if($ready) {
-                    require_once "views/main/main.php";
+                    header ("Location: index.php");
                 } else {
                     require_once "views/user/login.php";
                     echo "Wrong username or password.";
@@ -80,6 +77,16 @@
 
         }
 
-    }
+        public function logout() {
+            require_once "models/user.php";
+
+            $user = new User();
+
+            $user->logout();
+
+            header ("Location: index.php");
+        }
+
+    } // END CLASS
 
 ?>

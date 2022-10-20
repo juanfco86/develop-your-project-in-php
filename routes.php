@@ -6,7 +6,10 @@
     class Route {
     
         function __construct() {
+
+            //echo $_SESSION['login'];
             if (isset($_SESSION['login'])) {
+
                 if (isset($_GET['controller'])) {
                     $nameController = $_GET['controller'].'Controller';
 
@@ -35,56 +38,37 @@
                         } else {
                             echo "The page doesn't exist.";
                         }
+
                     } else {
                         echo "The page doesn't exist.";
                     }
+
                 } else {
                     require_once "views/main/main.php";
                 }
+
             } else {
                 require_once "views/user/login.php";
-            }
-                // if (isset($_GET['controller'])) {
-                //     $nameController = $_GET['controller'].'Controller';
 
-                //     if(class_exists($nameController)) {
-                //         $controller = new $nameController();
+                if (isset($_GET['controller'])) {
+                    $nameController = $_GET['controller'].'Controller';
 
-                //         if (isset($_GET['action'])) {
-                //             $action = $_GET['action'];
+                    if (class_exists($nameController)) {
+                        $controller = new $nameController();
 
-                //             if ($action !== 'login') {
-
-                //                 if (!isset($_SESSION['login'])) {
-                //                     require_once "views/user/login.php";;
-                //                 }
-
-                //                 if (isset($_GET['id'])) {
-                //                     $controller->$action($_GET['id']);
-                                    
-                //                 } else {
-                //                     $controller->$action();
-                //              }
-                //         }
-
-                //         } else {
-                //             echo "The page doesn't exist.";
-                //         }
-
-                //     } else {
-                //         echo "The page doesn't exist.";
-                //     }
-
-                // } else {
-                //     require_once "views/user/login.php";
-                // }
-                
+                        if (isset($_GET['action']) && $_GET['action'] == 'login') {
+                            $action = $_GET['action'];
+                            $controller->$action();
+                        } else {
+                            header ("Location: index.php");
+                        }
+                    }
+                }                
             
-        }
+            }
 
-        
-
-    }
+        } // END FUNCTION
+    } // END CLASS ROUTE
 
 
 ?>

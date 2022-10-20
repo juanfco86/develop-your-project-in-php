@@ -55,15 +55,11 @@ use FTP\Connection;
             $this->name = $name;
             $this->email = $email;
             $this->username = $username;
-            $this->password = $password;
-
-            $option = array('cost' => 10);
-
-            $passwordHashed = password_hash($password, PASSWORD_BCRYPT, $option);
+            $this->password = $password;            
 
             $sql = "INSERT INTO users(name, email, username, password) VALUES (?,?,?,?)";
             $insert = $this->connect->prepare($sql);
-            $arrData = array($this->name, $this->email, $this->username, $passwordHashed);
+            $arrData = array($this->name, $this->email, $this->username, $this->password);
             $insertExe = $insert->execute($arrData);
 
         }
@@ -92,13 +88,20 @@ use FTP\Connection;
             $login->bindParam(":user", $username);
             $login->execute();
 
-            
+            // SEE IF USER EXIST AND RETURN ROW WITH DATABASE INFO
             if ($login->rowCount() == 1) {
                 $row = $login->fetch(PDO::FETCH_ASSOC);
-                $passwordHashed = $row['password'];
+                $rowPassword = $row['password'];
                 
+                // AQUI ESTA LA SOLUCION
+                $option = array('cost' => 10);
+                $passwordHashed = password_hash($rowPassword, PASSWORD_BCRYPT, $option);
+
+                $passVerify = password_verify($password, $passwordHashed);
+
                 
-                if(password_verify($password, $passwordHashed)) {
+                if($passVerify) {
+                    $_SESSION['login'] = "OK";
                     return true;
                 } else {
                     return false;
@@ -106,9 +109,12 @@ use FTP\Connection;
             } else {
                 return false;
             }
-
         }
 
-    }
+        public function logout() {
+            session_destroy();
+        }
+
+    } // END CLASS
 
 ?>
